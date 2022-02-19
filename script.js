@@ -147,34 +147,7 @@ function main(){
     gl.enableVertexAttribArray(colorAttLoc);
     gl.uniform2f(resolutionUnLoc, gl.canvas.width, gl.canvas.height);
 
-    var thingsToDraw = [
-        {
-            positions: [
-                10, 20,
-                80, 20,
-                10, 30,
-            ],
-            color : [
-                98, 252, 3,
-                98, 252, 3,
-                98, 252, 3
-            ],
-            drawMode : modes.POLYGON
-        },
-        {
-            positions: [
-                10, 30,
-                80, 20,
-                80, 30,
-            ],
-            color : [
-                122, 63, 181,
-                122, 63, 181,
-                122, 63, 181
-            ],
-            drawMode : modes.POLYGON
-        }
-    ]
+    var thingsToDraw = []
     drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes)
 
     
@@ -217,7 +190,7 @@ function main(){
             if(firstPointPolygon){
                 thingsToDraw.push({
                     positions:[
-                        e.pageX, e.pageY
+                        e.pageX, e.pageY-this.offsetTop
                     ],
                     color : nowColor,
                     drawMode :modes.POLYGON
@@ -225,7 +198,7 @@ function main(){
                 firstPointPolygon = false;
             }
             else{
-                thingsToDraw[thingsToDraw.length-1].positions.push(e.pageX, e.pageY)
+                thingsToDraw[thingsToDraw.length-1].positions.push(e.pageX, e.pageY-this.offsetTop)
                 thingsToDraw[thingsToDraw.length-1].color.push(...nowColor)
             }
             drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes)
