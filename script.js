@@ -140,8 +140,40 @@ function main(){
             ]
         }
     ]
-
     drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc)
+
+    /* attributes for event listeners */
+    var focus = false;
+    const modes = {
+        LINE : 0,
+        SQUARE : 1,
+        RECTANGLE : 2,
+        POLYGON : 3
+    }
+
+    var drawMode = modes.LINE
+    /* event listeners */
+    // changing modes
+    const line = document.getElementById("lineBtn")
+    line.addEventListener("click", function(e){
+        drawMode = modes.LINE
+    })
+
+    const square = document.getElementById("squareBtn")
+    square.addEventListener("click", function(e){
+        drawMode = modes.SQUARE
+    })
+
+    const rectangle = document.getElementById("rectangleBtn")
+    rectangle.addEventListener("click", function(e){
+        drawMode = modes.RECTANGLE
+    })
+
+    const poly = document.getElementById("polygonBtn")
+    poly.addEventListener("click", function(e){
+        drawMode = modes.POLYGON
+    })
+
 } 
 
 main()
