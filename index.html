@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>コンピューターグラフィックス</title>
+    <!-- favicon -->
+    <link rel="icon" href="./res/favicon.ico">
+    <!-- css -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <p><b>grafika kongmputer is my passion (y)</b></p>
+        </div>
+        <div class = "screenandbuttons">
+            <div class="canvasdiv">
+                <canvas id = "canvas"></canvas>
+            </div>
+            <div class="buttons">
+                <!-- feature buttons -->
+                <button id="lineBtn" class="button" type="button">Line</button>
+                <button id="squareBtn" class="button" type="button">Square</button>
+                <button id="rectangleBtn" class="button" type="button">Rectangle</button>
+                <button id="polygonBtn" class="button" type="button">Polygon</button>
+
+                <!-- color picker -->
+                <input type="color" id="colorBtn" name="colorBtn" class="button" style="height: 4%;" value="#000000">
+                <label for="colorBtn">Color</label>
+
+                <!-- save and load button -->
+                <button id="loadBtn" class="button" style="margin-top: 50px;" type="button">Load</button>
+                <button id="saveBtn" class="button" type="button">Save</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

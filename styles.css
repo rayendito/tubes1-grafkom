@@ -1,0 +1,42 @@
+html, body{
+    margin: 0;
+    height: 100vh;
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.header{
+    color: white;
+    background-color:rgb(37, 82, 101);
+    margin: 0;
+    text-align: center;
+}
+
+.screenandbuttons{
+    display: flex;
+    flex-grow: 1;
+}
+
+.canvasdiv{
+    flex-grow: 1;
+}
+
+.buttons{
+    background-color:beige;
+    width: 7%;
+}
+
+.button{
+    width: 100%;
+    height: 10%;
+}
+
+#canvas{
+    /* background-color:black; */
+    width: 100%;
+    height: 100%;
+}
