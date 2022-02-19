@@ -97,6 +97,7 @@ function main(){
     // get variable locations
     var positionAttLoc = gl.getAttribLocation(program, "a_position")
     var colorAttLoc = gl.getAttribLocation(program, "a_color")
+    var resolutionUnLoc = gl.getUniformLocation(program, "u_resolution");
     
     // create buffers to store thing data
     var positionBuffer = gl.createBuffer()
@@ -111,18 +112,31 @@ function main(){
     // enabling the attributes
     gl.enableVertexAttribArray(positionAttLoc);
     gl.enableVertexAttribArray(colorAttLoc);
+    gl.uniform2f(resolutionUnLoc, gl.canvas.width, gl.canvas.height);
 
     var thingsToDraw = [
         {
             positions: [
-                0, 0,
-                0, 0.5,
-                0.7, 0,
+                10, 20,
+                80, 20,
+                10, 30,
             ],
             color : [
                 98, 252, 3,
                 98, 252, 3,
                 98, 252, 3
+            ]
+        },
+        {
+            positions: [
+                10, 30,
+                80, 20,
+                80, 30,
+            ],
+            color : [
+                122, 63, 181,
+                122, 63, 181,
+                122, 63, 181
             ]
         }
     ]
