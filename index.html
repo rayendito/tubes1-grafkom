@@ -9,6 +9,24 @@
     <link rel="icon" href="./res/favicon.ico">
     <!-- css -->
     <link rel="stylesheet" href="styles.css">
+    <!-- script -->
+    <script src="script.js" defer></script>
+
+    <!-- SHADER PROGRAM SRC -->
+    <!-- vertex shader -->
+    <script id="vertex-src" type="notjs">
+        attribute vec4 a_position;
+        void main() {
+            glPosition = a_position;
+        }
+    </script>
+    <!-- fragment shader -->
+    <script id="fragment-src" type="notjs">
+        precision mediump float;
+        void main() {
+            gl_fragColor = vec4(1, 0, 0.5, 1);
+        }
+    </script>
 </head>
 <body>
     <div class="container">
