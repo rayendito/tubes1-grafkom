@@ -21,6 +21,50 @@ function createProgram(webglContext, vertexShader, fragmentShader){
     return program;
 }
 
+// blok canvas dengan warna putih, jadi kesannya blank
+function clearScreenToWhite(webglContext){
+    webglContext.clearColor(0, 0, 0, 0);
+    webglContext.clear(webglContext.COLOR_BUFFER_BIT);
+}
+
+// draw a set of shapes, input is 
+function drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc) {
+    // clear screen first wkwkw
+    clearScreenToWhite(gl)
+
+    // draw satu satu gan
+    thingsToDraw.map(thing => {
+        // position dulu
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(thing.positions), gl.STATIC_DRAW);
+
+        // how to get position
+        var size = 2
+        var type = gl.FLOAT
+        var normalize = false
+        var stride = 0
+        var offset = 0
+        gl.vertexAttribPointer(positionAttLoc, size, type, normalize, stride, offset);
+
+        //habisitu color
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(thing.color), gl.STATIC_DRAW);
+
+        // how to get color
+        size = 3;
+        type = gl.UNSIGNED_BYTE;
+        normalize = true;
+        stride = 0;
+        offset = 0;
+        gl.vertexAttribPointer(colorAttLoc, size, type, normalize, stride, offset);
+
+        var primitiveType = gl.TRIANGLES
+        var offset = 0;
+        var count = thing.positions.length/2;
+        gl.drawArrays(primitiveType, offset, count);
+    })
+}
+
 function main(){
     // get webgl context
     const canvas = document.getElementById("canvas")
@@ -52,45 +96,38 @@ function main(){
 
     // get variable locations
     var positionAttLoc = gl.getAttribLocation(program, "a_position")
+    var colorAttLoc = gl.getAttribLocation(program, "a_color")
     
-    // create a buffer to store location data
+    // create buffers to store thing data
     var positionBuffer = gl.createBuffer()
-
-    // bind to array buffer. kayanya buat ngeset buffer mana yang dipake
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
-
-    /* LOCATION VARIABLE */
-    var positions = [
-        0, 0,
-        0, 0.5,
-        0.7, 0,
-    ]
-
-    // add the positions to the buffer
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW)
+    var colorBuffer = gl.createBuffer()
 
     // clear the canvas (like ngeblock seluruh canvas)
-    gl.clearColor(0, 0, 0, 0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    clearScreenToWhite(gl)
 
     /* "TURNING ON" the program */
     gl.useProgram(program);
-    // enabling the vertex attribute
+
+    // enabling the attributes
     gl.enableVertexAttribArray(positionAttLoc);
+    gl.enableVertexAttribArray(colorAttLoc);
 
-    // ini kaya ngeassign dari buffer ke attribute location yang ada di shader program
-    var size = 2;
-    var type = gl.FLOAT;
-    var normalize = false;
-    var stride = 0;
-    var offset = 0;
-    gl.vertexAttribPointer(positionAttLoc, size, type, normalize, stride, offset);
+    var thingsToDraw = [
+        {
+            positions: [
+                0, 0,
+                0, 0.5,
+                0.7, 0,
+            ],
+            color : [
+                98, 252, 3,
+                98, 252, 3,
+                98, 252, 3
+            ]
+        }
+    ]
 
-    /* DRAWING :D */
-    var primitiveType = gl.TRIANGLES;
-    var offset = 0;
-    var count = 3;
-    gl.drawArrays(primitiveType, offset, count);
-}
+    drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc)
+} 
 
 main()
