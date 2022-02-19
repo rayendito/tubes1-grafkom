@@ -25,8 +25,8 @@
             vec2 nolToSatu = a_position/u_resolution;
             vec2 nolToDua = nolToSatu * 2.0;
             vec2 clipSpace = nolToDua - 1.0;
-            gl_Position = vec4(clipSpace, 0, 1);
-            
+            gl_Position = vec4(clipSpace.x, clipSpace.y*-1.0, 0, 1);
+
             v_color = a_color;
         }
     </script>

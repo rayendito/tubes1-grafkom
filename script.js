@@ -27,8 +27,15 @@ function clearScreenToWhite(webglContext){
     webglContext.clear(webglContext.COLOR_BUFFER_BIT);
 }
 
+function hexToRGB(hex){
+    var r = parseInt(hex[1]+hex[2], 16);
+    var g = parseInt(hex[3]+hex[4], 16);
+    var b = parseInt(hex[5]+hex[6], 16);
+    return [r,g,b];
+}
+
 // draw a set of shapes, input is 
-function drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc) {
+function drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes) {
     // clear screen first wkwkw
     clearScreenToWhite(gl)
 
@@ -61,6 +68,18 @@ function drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAtt
         var primitiveType = gl.TRIANGLES
         var offset = 0;
         var count = thing.positions.length/2;
+        if (thing.drawMode == modes.LINE){
+
+        }
+        else if (thing.drawMode == modes.SQUARE){
+
+        }
+        else if (thing.drawMode == modes.RECTANGLE){
+
+        }
+        else if (thing.drawMode == modes.POLYGON){ // polygon
+            primitiveType = gl.LINE_LOOP
+        }
         gl.drawArrays(primitiveType, offset, count);
     })
 }
@@ -74,6 +93,20 @@ function main(){
         alert("browser ga support webgl :(")
         return
     }
+
+    /* attributes for event listeners */
+    var nowColor = [0,0,0]
+    var firstPointPolygon = true
+
+    const modes = {
+        LINE : 0,
+        SQUARE : 1,
+        RECTANGLE : 2,
+        POLYGON : 3
+    }
+
+    // drawing mode
+    var drawMode = modes.LINE
 
     // resizing canvas supaya resolusi bagus
     canvas.width  = canvas.clientWidth;
@@ -125,7 +158,8 @@ function main(){
                 98, 252, 3,
                 98, 252, 3,
                 98, 252, 3
-            ]
+            ],
+            drawMode : modes.POLYGON
         },
         {
             positions: [
@@ -137,21 +171,13 @@ function main(){
                 122, 63, 181,
                 122, 63, 181,
                 122, 63, 181
-            ]
+            ],
+            drawMode : modes.POLYGON
         }
     ]
-    drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc)
+    drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes)
 
-    /* attributes for event listeners */
-    var focus = false;
-    const modes = {
-        LINE : 0,
-        SQUARE : 1,
-        RECTANGLE : 2,
-        POLYGON : 3
-    }
-
-    var drawMode = modes.LINE
+    
     /* event listeners */
     // changing modes
     const line = document.getElementById("lineBtn")
@@ -172,8 +198,39 @@ function main(){
     const poly = document.getElementById("polygonBtn")
     poly.addEventListener("click", function(e){
         drawMode = modes.POLYGON
+        firstPointPolygon = true;
     })
 
+    //color picker
+    const colorpick = document.getElementById("colorBtn")
+    colorpick.addEventListener('change', function(e){
+        const rgb = hexToRGB(e.target.value)
+        nowColor[0] = rgb[0]
+        nowColor[1] = rgb[1]
+        nowColor[2] = rgb[2]
+    })
+
+    /* canvas event listener */
+    //draw
+    canvas.addEventListener("click", function(e){
+        if(drawMode == modes.POLYGON){
+            if(firstPointPolygon){
+                thingsToDraw.push({
+                    positions:[
+                        e.pageX, e.pageY
+                    ],
+                    color : nowColor,
+                    drawMode :modes.POLYGON
+                })
+                firstPointPolygon = false;
+            }
+            else{
+                thingsToDraw[thingsToDraw.length-1].positions.push(e.pageX, e.pageY)
+                thingsToDraw[thingsToDraw.length-1].color.push(...nowColor)
+            }
+            drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes)
+        }
+    })
 } 
 
 main()
