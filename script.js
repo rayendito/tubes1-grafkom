@@ -1,89 +1,5 @@
 "use strict";
 
-function createShader(webglContext, type, sourceCode){
-    // [1] create empty shader with type
-    var shader = webglContext.createShader(type)
-    // [2] add source
-    webglContext.shaderSource(shader, sourceCode)
-    // [3] compile
-    webglContext.compileShader(shader)
-    return shader
-}
-
-function createProgram(webglContext, vertexShader, fragmentShader){
-    // create an empty program
-    var program = webglContext.createProgram()
-    // attach the shaders
-    webglContext.attachShader(program, vertexShader)
-    webglContext.attachShader(program, fragmentShader)
-    // link the program
-    webglContext.linkProgram(program)
-    return program;
-}
-
-// blok canvas dengan warna putih, jadi kesannya blank
-function clearScreenToWhite(webglContext){
-    webglContext.clearColor(0, 0, 0, 0);
-    webglContext.clear(webglContext.COLOR_BUFFER_BIT);
-}
-
-function hexToRGB(hex){
-    var r = parseInt(hex[1]+hex[2], 16);
-    var g = parseInt(hex[3]+hex[4], 16);
-    var b = parseInt(hex[5]+hex[6], 16);
-    return [r,g,b];
-}
-
-// draw a set of shapes, input is 
-function drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes) {
-    // clear screen first wkwkw
-    clearScreenToWhite(gl)
-
-    // draw satu satu gan
-    thingsToDraw.map(thing => {
-        // position dulu
-        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(thing.positions), gl.STATIC_DRAW);
-
-        // how to get position
-        var size = 2
-        var type = gl.FLOAT
-        var normalize = false
-        var stride = 0
-        var offset = 0
-        gl.vertexAttribPointer(positionAttLoc, size, type, normalize, stride, offset);
-
-        //habisitu color
-        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(thing.color), gl.STATIC_DRAW);
-
-        // how to get color
-        size = 3;
-        type = gl.UNSIGNED_BYTE;
-        normalize = true;
-        stride = 0;
-        offset = 0;
-        gl.vertexAttribPointer(colorAttLoc, size, type, normalize, stride, offset);
-
-        var primitiveType = gl.TRIANGLES
-        var offset = 0;
-        var count = thing.positions.length/2;
-        if (thing.drawMode == modes.LINE){
-
-        }
-        else if (thing.drawMode == modes.SQUARE){
-
-        }
-        else if (thing.drawMode == modes.RECTANGLE){
-
-        }
-        else if (thing.drawMode == modes.POLYGON){ // polygon
-            primitiveType = gl.LINE_LOOP
-        }
-        gl.drawArrays(primitiveType, offset, count);
-    })
-}
-
 function main(){
     // get webgl context
     const canvas = document.getElementById("canvas")
@@ -148,8 +64,7 @@ function main(){
     gl.uniform2f(resolutionUnLoc, gl.canvas.width, gl.canvas.height);
 
     var thingsToDraw = []
-    drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes)
-
+    var thingsToDrawLength = 0
     
     /* event listeners */
     // changing modes
@@ -171,16 +86,20 @@ function main(){
     const poly = document.getElementById("polygonBtn")
     poly.addEventListener("click", function(e){
         drawMode = modes.POLYGON
-        firstPointPolygon = true;
+    })
+
+    const noSelect = document.getElementById("noneBtn")
+    noSelect.addEventListener("click", function(e){
+        // artinya lagi ga milih apa apa, not drawing anything
+        drawMode = -1
+        firstPointPolygon = true
     })
 
     //color picker
     const colorpick = document.getElementById("colorBtn")
     colorpick.addEventListener('change', function(e){
         const rgb = hexToRGB(e.target.value)
-        nowColor[0] = rgb[0]
-        nowColor[1] = rgb[1]
-        nowColor[2] = rgb[2]
+        nowColor = rgb
     })
 
     /* canvas event listener */
@@ -195,14 +114,16 @@ function main(){
                     color : nowColor,
                     drawMode :modes.POLYGON
                 })
+                thingsToDrawLength++
                 firstPointPolygon = false;
             }
             else{
-                thingsToDraw[thingsToDraw.length-1].positions.push(e.pageX, e.pageY-this.offsetTop)
-                thingsToDraw[thingsToDraw.length-1].color.push(...nowColor)
+                thingsToDraw[thingsToDrawLength-1].positions.push(e.pageX, e.pageY-this.offsetTop)
+                thingsToDraw[thingsToDrawLength-1].color.push(nowColor[0], nowColor[1], nowColor[2])
             }
             drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes)
         }
+        // add elifs for other modes
     })
 } 
 
