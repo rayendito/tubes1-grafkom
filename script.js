@@ -71,27 +71,32 @@ function main(){
     const line = document.getElementById("lineBtn")
     line.addEventListener("click", function(e){
         drawMode = modes.LINE
+        document.getElementById("curMode").innerHTML = "LINE"
     })
 
     const square = document.getElementById("squareBtn")
     square.addEventListener("click", function(e){
         drawMode = modes.SQUARE
+        document.getElementById("curMode").innerHTML = "SQUARE"
     })
 
     const rectangle = document.getElementById("rectangleBtn")
     rectangle.addEventListener("click", function(e){
         drawMode = modes.RECTANGLE
+        document.getElementById("curMode").innerHTML = "RECT"
     })
 
     const poly = document.getElementById("polygonBtn")
     poly.addEventListener("click", function(e){
         drawMode = modes.POLYGON
+        document.getElementById("curMode").innerHTML = "POLY"
     })
 
     const noSelect = document.getElementById("noneBtn")
     noSelect.addEventListener("click", function(e){
         // artinya lagi ga milih apa apa, not drawing anything
         drawMode = -1
+        document.getElementById("curMode").innerHTML = "NONE"
         firstPointPolygon = true
     })
 
