@@ -35,7 +35,7 @@ function main(){
             drawMode: modes.POLYGON
         }
     ]
-    var thingsToDrawLength = 0
+    var thingsToDrawLength = thingsToDraw.length
 
     // resizing canvas supaya resolusi bagus
     canvas.width  = canvas.clientWidth;
@@ -121,7 +121,7 @@ function main(){
     })
 
     drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes)
-    
+
     /* canvas event listener */
     //draw
     canvas.addEventListener("click", function(e){
@@ -139,7 +139,6 @@ function main(){
             }
             else{
                 thingsToDraw[thingsToDrawLength-1].positions.push(e.pageX, e.pageY-this.offsetTop)
-                thingsToDraw[thingsToDrawLength-1].color.push(nowColor[0], nowColor[1], nowColor[2])
             }
             drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes)
         }

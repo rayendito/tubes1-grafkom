@@ -32,7 +32,7 @@
             vec2 clipSpace = nolToDua - 1.0;
             gl_Position = vec4(clipSpace.x, clipSpace.y*-1.0, 0, 1);
 
-            
+
             v_color = a_color;
         }
     </script>
@@ -56,7 +56,7 @@
                 <canvas id = "canvas"></canvas>
             </div>
             <div class="buttons">
-                <p><b id="curMode">LINE</b></p>
+                <p><b id="curMode">NONE</b></p>
                 <!-- feature buttons -->
                 <button id="lineBtn" class="button" type="button">Line</button>
                 <button id="squareBtn" class="button" type="button">Square</button>
