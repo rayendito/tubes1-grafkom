@@ -22,7 +22,7 @@ function main(){
     var drawMode = -1
     var thingsToDraw = [
         {
-            id: 1,
+            id: 120,
             positions:[
                 452, 187,
                 638, 104,
@@ -85,7 +85,6 @@ function main(){
     var pick_positionAttLoc = gl.getAttribLocation(pick_program, "pick_position");
     var pick_resolutionUnLoc = gl.getUniformLocation(pick_program, "pick_resolution");
     var pick_colorUnLoc = gl.getUniformLocation(pick_program, "u_id");
-
 
     /********** CREATE TEXTURE TO RENDER TO **********/
     // texture to render to
