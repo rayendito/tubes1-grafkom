@@ -10,28 +10,40 @@ function main(){
         return
     }
 
-    /* attributes for event listeners */
+    /********** ATTRIBUTES AND INITIALIZATIONS **********/
     var nowColor = [0,0,0]
     var firstPointPolygon = true
-
     const modes = {
         LINE : 0,
         SQUARE : 1,
         RECTANGLE : 2,
         POLYGON : 3
     }
-
-    // drawing mode
-    var drawMode = modes.LINE
+    var drawMode = -1
+    var thingsToDraw = [
+        {
+            positions:[
+                452, 187,
+                638, 104,
+                922, 243,
+                745, 406,
+                546, 407
+            ],
+            color: [
+                28, 109, 171
+            ],
+            drawMode: modes.POLYGON
+        }
+    ]
+    var thingsToDrawLength = 0
 
     // resizing canvas supaya resolusi bagus
     canvas.width  = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
-    
     // set viewport to full height and width of the canvas
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
 
-    /* CREATING SHADER PROGRAM */
+    /********** CREATING SHADER PROGRAM **********/
     // get the source codes for the shader programs
     const vertexSource = document.getElementById("vertex-src").text
     const fragmentSource = document.getElementById("fragment-src").text
@@ -47,26 +59,27 @@ function main(){
     var positionAttLoc = gl.getAttribLocation(program, "a_position")
     var colorAttLoc = gl.getAttribLocation(program, "a_color")
     var resolutionUnLoc = gl.getUniformLocation(program, "u_resolution");
-    
-    // create buffers to store thing data
+
+    /********** CREATE BUFFERS **********/
     var positionBuffer = gl.createBuffer()
     var colorBuffer = gl.createBuffer()
 
-    // clear the canvas (like ngeblock seluruh canvas)
+    /********** CREATE FRAME BUFFERS **********/
+
+
+
+    /********** CALL TO CLEAR ALL **********/
     clearScreenToWhite(gl)
 
-    /* "TURNING ON" the program */
+    /********** USE PROGRAM **********/
     gl.useProgram(program);
 
-    // enabling the attributes
+    /********** ENABLING ATTS **********/
     gl.enableVertexAttribArray(positionAttLoc);
     gl.enableVertexAttribArray(colorAttLoc);
     gl.uniform2f(resolutionUnLoc, gl.canvas.width, gl.canvas.height);
-
-    var thingsToDraw = []
-    var thingsToDrawLength = 0
     
-    /* event listeners */
+    /********** EVENT LISTENERS **********/
     // changing modes
     const line = document.getElementById("lineBtn")
     line.addEventListener("click", function(e){
@@ -107,6 +120,8 @@ function main(){
         nowColor = rgb
     })
 
+    drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes)
+    
     /* canvas event listener */
     //draw
     canvas.addEventListener("click", function(e){

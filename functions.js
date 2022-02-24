@@ -52,8 +52,14 @@ function drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAtt
         gl.vertexAttribPointer(positionAttLoc, size, type, normalize, stride, offset);
 
         //habisitu color
+        var colorArray = []
+        var numPoints = thing.positions.length/2
+        for(var i = 0; i < numPoints; i++){
+            colorArray.push(thing.color[0], thing.color[1], thing.color[2])
+        }
+
         gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(thing.color), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(colorArray), gl.STATIC_DRAW);
 
         // how to get color
         size = 3;
