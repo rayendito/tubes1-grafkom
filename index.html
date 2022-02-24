@@ -45,6 +45,29 @@
             gl_FragColor = v_color;
         }
     </script>
+
+    <!-- SHADER PROGRAM FOR PICKING -->
+    <!-- vertex shader -->
+    <script id="vertex-src-pick" type="notjs">
+        attribute vec2 pick_position;
+        uniform vec2 pick_resolution;
+        
+        void main(){
+            vec2 nolToSatu = pick_position/pick_resolution;
+            vec2 nolToDua = nolToSatu * 2.0;
+            vec2 clipSpace = nolToDua - 1.0;
+            gl_Position = vec4(clipSpace.x, clipSpace.y*-1.0, 0, 1);
+        }
+    </script>
+
+    <!-- fragment shader -->
+    <script id="fragment-src-pick" type="notjs">
+        precision mediump float;
+        uniform vec4 u_id;
+        void main(){
+            gl_FragColor = u_id;
+        }
+    </script>
 </head>
 <body>
     <div class="container">

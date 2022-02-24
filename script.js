@@ -22,6 +22,7 @@ function main(){
     var drawMode = -1
     var thingsToDraw = [
         {
+            id: 1,
             positions:[
                 452, 187,
                 638, 104,
@@ -64,20 +65,76 @@ function main(){
     var positionBuffer = gl.createBuffer()
     var colorBuffer = gl.createBuffer()
 
-    /********** CREATE FRAME BUFFERS **********/
+
+
+
+
+
+
+
+    /********** PROGRAM FOR OBJECT PICKER **********/
+    const pick_vertex_source = document.getElementById('vertex-src-pick').text
+    const pick_fragment_source = document.getElementById('fragment-src-pick').text
+
+    // create shaders and the program
+    var pick_vertexShader = createShader(gl, gl.VERTEX_SHADER, pick_vertex_source)
+    var pick_fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, pick_fragment_source)
+    var pick_program = createProgram(gl, pick_vertexShader, pick_fragmentShader)
+
+    // get att location
+    var pick_positionAttLoc = gl.getAttribLocation(pick_program, "pick_position");
+    var pick_resolutionUnLoc = gl.getUniformLocation(pick_program, "pick_resolution");
+    var pick_colorUnLoc = gl.getUniformLocation(pick_program, "u_id");
+
+
+    /********** CREATE TEXTURE TO RENDER TO **********/
+    // texture to render to
+    const targetTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, targetTexture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+    // depth render buffer
+    const depthBuffer = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, depthBuffer);
+
+    setFrameBufferAttachmentSizes(gl, gl.canvas.width, gl.canvas.height, targetTexture, depthBuffer)
+
+    /********** CREATE FRAME BUFFER AND SET DEPTH BUFFER (and also binding lol) **********/
+    const fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb)
+
+    // attach the target texture to the frame buffer
+    const attachmentPoint = gl.COLOR_ATTACHMENT0;
+    const level = 0;
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, attachmentPoint, gl.TEXTURE_2D, targetTexture, level)
+
+    // set the depth buffer
+    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
+
+    //create buffer
+    var pick_positionBuffer = gl.createBuffer()
+
+
+
+
+
+
+
+
+
 
 
 
     /********** CALL TO CLEAR ALL **********/
     clearScreenToWhite(gl)
 
-    /********** USE PROGRAM **********/
+    /********** USE PROGRAM AND ENABLING UNIFORM FOR SCALING **********/
     gl.useProgram(program);
-
-    /********** ENABLING ATTS **********/
-    gl.enableVertexAttribArray(positionAttLoc);
-    gl.enableVertexAttribArray(colorAttLoc);
     gl.uniform2f(resolutionUnLoc, gl.canvas.width, gl.canvas.height);
+    gl.useProgram(pick_program);
+    gl.uniform2f(pick_resolutionUnLoc, gl.canvas.width, gl.canvas.height);
     
     /********** EVENT LISTENERS **********/
     // changing modes
@@ -120,7 +177,9 @@ function main(){
         nowColor = rgb
     })
 
-    drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes)
+    drawToScreen(gl, program, pick_program, fb,
+                thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes,
+                pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc)
 
     /* canvas event listener */
     //draw
@@ -128,6 +187,7 @@ function main(){
         if(drawMode == modes.POLYGON){
             if(firstPointPolygon){
                 thingsToDraw.push({
+                    id: thingsToDrawLength+1,
                     positions:[
                         e.pageX, e.pageY-this.offsetTop
                     ],
@@ -140,7 +200,9 @@ function main(){
             else{
                 thingsToDraw[thingsToDrawLength-1].positions.push(e.pageX, e.pageY-this.offsetTop)
             }
-            drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes)
+            drawToScreen(gl, program, pick_program, fb,
+                thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes,
+                pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc)
         }
         // add elifs for other modes
     })

@@ -33,16 +33,67 @@ function hexToRGB(hex){
 }
 
 // draw a set of shapes, input is 
-function drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes) {
+function drawToScreen(gl, program, pick_program, fb, thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes, pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc) {
     // clear screen first wkwkw
     clearScreenToWhite(gl)
 
-    // draw satu satu gan
+    // draw to the texture first
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    // gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.enable(gl.CULL_FACE);
+    gl.enable(gl.DEPTH_TEST);
+
+    gl.useProgram(pick_program) // pick_program for drawing to the texture
+    thingsToDraw.map(thing => {
+        // yeah bind first
+        gl.bindBuffer(gl.ARRAY_BUFFER, pick_positionBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(thing.positions), gl.STATIC_DRAW);
+        gl.enableVertexAttribArray(pick_positionAttLoc);
+        // how to get position
+        var size = 2
+        var type = gl.FLOAT
+        var normalize = false
+        var stride = 0
+        var offset = 0
+        gl.vertexAttribPointer(pick_positionAttLoc, size, type, normalize, stride, offset);
+
+        // habisitu color --  as a uniform soalnya dibuat sama karena dia adalah id
+        var colorArray = [
+            ((thing.id >> 0) & 0xFF) / 0xFF,
+            ((thing.id >> 8) & 0xFF) / 0xFF,
+            ((thing.id >> 16) & 0xFF) / 0xFF,
+            ((thing.id >> 24) & 0xFF) / 0xFF
+        ]
+        gl.uniform4fv(pick_colorUnLoc, colorArray)
+
+        var primitiveType = gl.TRIANGLES
+        var offset = 0;
+        var count = thing.positions.length/2;
+        if (thing.drawMode == modes.LINE){
+
+        }
+        else if (thing.drawMode == modes.SQUARE){
+
+        }
+        else if (thing.drawMode == modes.RECTANGLE){
+
+        }
+        else if (thing.drawMode == modes.POLYGON){ // polygon
+            primitiveType = gl.LINE_LOOP
+        }
+        gl.drawArrays(primitiveType, offset, count);
+    })
+
+
+
+    // draw to the canvas second
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.useProgram(program)
     thingsToDraw.map(thing => {
         // position dulu
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(thing.positions), gl.STATIC_DRAW);
-
+        gl.enableVertexAttribArray(positionAttLoc);
         // how to get position
         var size = 2
         var type = gl.FLOAT
@@ -60,7 +111,7 @@ function drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAtt
 
         gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(colorArray), gl.STATIC_DRAW);
-
+        gl.enableVertexAttribArray(colorAttLoc);
         // how to get color
         size = 3;
         type = gl.UNSIGNED_BYTE;
@@ -86,4 +137,29 @@ function drawToScreen(gl, thingsToDraw, positionBuffer, colorBuffer, positionAtt
         }
         gl.drawArrays(primitiveType, offset, count);
     })
+}
+
+// set parameters for texture and renderbuffer
+function setFrameBufferAttachmentSizes(gl, width, height, targetTexture, depthBuffer){
+    // i guess ini tuh buat ngeset parameter2 si texture?
+    gl.bindTexture(gl.TEXTURE_2D, targetTexture)
+    // definisikan parameter2 tekstur
+    const level = 0;
+    const internalFormat = gl.RGBA;
+    const border = 0;
+    const format = gl.RGBA;
+    const type = gl.UNSIGNED_BYTE;
+    const data = null; // emang kosong, cuma perlu buat alokasi sebuah texture
+    gl.texImage2D(gl.TEXTURE_2D,
+                    level,
+                    internalFormat,
+                    width, height,
+                    border,
+                    format,
+                    type,
+                    data);
+
+    // ini baru soal depth
+    gl.bindRenderbuffer(gl.RENDERBUFFER, depthBuffer);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
 }
