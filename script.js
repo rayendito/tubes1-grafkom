@@ -20,21 +20,7 @@ function main(){
         POLYGON : 3
     }
     var drawMode = -1
-    var thingsToDraw = [
-        {
-            positions:[
-                452, 187,
-                638, 104,
-                922, 243,
-                745, 406,
-                546, 407
-            ],
-            color: [
-                28, 109, 171
-            ],
-            drawMode: modes.POLYGON
-        }
-    ]
+    var thingsToDraw = []
     var thingsToDrawLength = thingsToDraw.length
 
     // resizing canvas supaya resolusi bagus
