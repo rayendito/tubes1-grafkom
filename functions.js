@@ -92,9 +92,13 @@ function drawToScreen(gl, program, pick_program, fb, thingsToDraw,
         if(drawMode == modes.CCOLOR){
             thingsToDraw[data[0]-1].color = nowColor
         }
-    }
-    else{
-        thingsToDraw[0].color = [28, 109, 171]
+        else if (drawMode == modes.MOVE){
+            if(thingsToDraw[data[0]-1].drawMode == modes.POLYGON){
+                const pickedPoint = findNearestVertex(mouseX, mouseY, thingsToDraw[data[0]-1].positions)
+                thingsToDraw[data[0]-1].positions[pickedPoint.x] = mouseX
+                thingsToDraw[data[0]-1].positions[pickedPoint.y] = mouseY
+            }
+        }
     }
     document.getElementById("C").innerHTML = data[0] + " " + data[1] + " " + data[2] + " " + data[3]
 
@@ -175,4 +179,33 @@ function setFrameBufferAttachmentSizes(gl, width, height, targetTexture, depthBu
     // ini baru soal depth
     gl.bindRenderbuffer(gl.RENDERBUFFER, depthBuffer);
     gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
+}
+
+//return indexes of x and y respectively -- to change in the attribute
+function findNearestVertex(X, Y, arrayOfLoc){
+    // assumption: arrayOfLoc selalu bernilai genap karena merupakan pasangan titik
+    var min, xret, yret
+    for (var i = 0; i < arrayOfLoc.length; i += 2){
+        if(!min){
+            min = calcDistance(X, Y, arrayOfLoc[i], arrayOfLoc[i+1])
+            xret = i
+            yret = i+1
+        }
+        else{
+            var cand_min = calcDistance(X, Y, arrayOfLoc[i], arrayOfLoc[i+1])
+            if(cand_min < min){
+                min = cand_min
+                xret = i
+                yret = i+1
+            }
+        }
+    }
+    return {
+        x : xret,
+        y : yret
+    }
+}
+
+function calcDistance(x1, y1, x2, y2){
+    return Math.sqrt( (x1-x2)**2 + (y1-y2)**2 );
 }

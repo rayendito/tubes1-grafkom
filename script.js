@@ -55,6 +55,8 @@ function main(){
     // mouse location
     let mouseX = -1;
     let mouseY = -1;
+    // mouse state
+    var mouseClicked = false
 
     // resizing canvas supaya resolusi bagus
     canvas.width  = canvas.clientWidth;
@@ -221,12 +223,16 @@ function main(){
         mouseY = e.clientY - rect.top;
         document.getElementById("X").innerHTML = mouseX
         document.getElementById("Y").innerHTML = mouseY
-        // drawToScreen(gl, program, pick_program, fb, thingsToDraw,
-        //     positionBuffer, colorBuffer,
-        //     positionAttLoc, colorAttLoc,
-        //     drawMode, modes,
-        //     pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
-        //     mouseX, mouseY, nowColor)
+        if(drawMode == modes.MOVE){
+            if(mouseClicked){
+                drawToScreen(gl, program, pick_program, fb, thingsToDraw,
+                    positionBuffer, colorBuffer,
+                    positionAttLoc, colorAttLoc,
+                    drawMode, modes,
+                    pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
+                    mouseX, mouseY, nowColor)
+            }
+        }
     })
 
     //draw
@@ -254,7 +260,7 @@ function main(){
                 pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
                 mouseX, mouseY, nowColor)
         }
-        if(drawMode = modes.CCOLOR){
+        if(drawMode == modes.CCOLOR){
             drawToScreen(gl, program, pick_program, fb, thingsToDraw,
                 positionBuffer, colorBuffer,
                 positionAttLoc, colorAttLoc,
@@ -262,6 +268,14 @@ function main(){
                 pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
                 mouseX, mouseY, nowColor)
         }
+    })
+
+    canvas.addEventListener('mousedown', (e) => {
+        mouseClicked = true
+    })
+
+    canvas.addEventListener('mouseup', (e) => {
+        mouseClicked = false
     })
 } 
 
