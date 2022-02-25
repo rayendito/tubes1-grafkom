@@ -176,9 +176,20 @@ function main(){
         nowColor = rgb
     })
 
-    drawToScreen(gl, program, pick_program, fb,
-                thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes,
-                pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc)
+    // mouse location
+    let mouseX = -1;
+    let mouseY = -1;
+    canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
+        document.getElementById("X").innerHTML = mouseX
+        document.getElementById("Y").innerHTML = mouseY
+        drawToScreen(gl, program, pick_program, fb,
+            thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes,
+            pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
+            mouseX, mouseY)
+    })
 
     /* canvas event listener */
     //draw
@@ -201,7 +212,8 @@ function main(){
             }
             drawToScreen(gl, program, pick_program, fb,
                 thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes,
-                pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc)
+                pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
+                mouseX, mouseY)
         }
         // add elifs for other modes
     })

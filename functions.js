@@ -33,13 +33,16 @@ function hexToRGB(hex){
 }
 
 // draw a set of shapes, input is 
-function drawToScreen(gl, program, pick_program, fb, thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes, pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc) {
+function drawToScreen(gl, program, pick_program, fb, thingsToDraw,
+                        positionBuffer, colorBuffer,
+                        positionAttLoc, colorAttLoc, modes,
+                        pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
+                        mouseX, mouseY) {
     // clear screen first wkwkw
-    // clearScreenToWhite(gl)
+    clearScreenToWhite(gl)
 
     /* DRAW TO TEXTURE */
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-    gl.clearColor(0.3, 0.5, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.enable(gl.CULL_FACE);
     gl.enable(gl.DEPTH_TEST);
@@ -86,80 +89,76 @@ function drawToScreen(gl, program, pick_program, fb, thingsToDraw, positionBuffe
     })
 
     /* PIXEL UNDER MOUSE ON TEXTURE */
-    let mouseX = -1;
-    let mouseY = -1;
-    gl.canvas.addEventListener('mousemove', (e) => {
-        const rect = canvas.getBoundingClientRect();
-        mouseX = e.clientX - rect.left;
-        mouseY = e.clientY - rect.top;
-        const data = new Uint8Array(4);
+    const data = new Uint8Array(4);
+    gl.readPixels(
+        mouseX,
+        gl.canvas.height - mouseY,
+        1,                 // width
+        1,                 // height
+        gl.RGBA,           // format
+        gl.UNSIGNED_BYTE,  // type
+        data);             // typed array to hold result
+    
+    if(data[0] > 0){
+        thingsToDraw[0].color = [245, 66, 117]
+    }
+    else{
+        thingsToDraw[0].color = [28, 109, 171]
+    }
+    document.getElementById("C").innerHTML = data[0] + " " + data[1] + " " + data[2] + " " + data[3]
 
-        gl.readPixels(
-            mouseX,
-            gl.canvas.height-mouseY,
-            1,                 // width
-            1,                 // height
-            gl.RGBA,           // format
-            gl.UNSIGNED_BYTE,  // type
-            data);             // typed array to hold result
-        
-        document.getElementById("X").innerHTML = mouseX
-        document.getElementById("Y").innerHTML = mouseY
-        document.getElementById("C").innerHTML = data[0] + " " + data[1] + " " + data[2] + " " + data[3]
+    /* DRAW TO CANVAS */
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.useProgram(program)
+    thingsToDraw.map(thing => {
+        // position dulu
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(thing.positions), gl.STATIC_DRAW);
+        gl.enableVertexAttribArray(positionAttLoc);
+        // how to get position
+        var size = 2
+        var type = gl.FLOAT
+        var normalize = false
+        var stride = 0
+        var offset = 0
+        gl.vertexAttribPointer(positionAttLoc, size, type, normalize, stride, offset);
+
+        //habisitu color
+        var colorArray = []
+        var numPoints = thing.positions.length/2
+        for(var i = 0; i < numPoints; i++){
+            colorArray.push(thing.color[0], thing.color[1], thing.color[2])
+        }
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(colorArray), gl.STATIC_DRAW);
+        gl.enableVertexAttribArray(colorAttLoc);
+        // how to get color
+        size = 3;
+        type = gl.UNSIGNED_BYTE;
+        normalize = true;
+        stride = 0;
+        offset = 0;
+        gl.vertexAttribPointer(colorAttLoc, size, type, normalize, stride, offset);
+
+        var primitiveType = gl.TRIANGLES
+        var offset = 0;
+        var count = thing.positions.length/2;
+        if (thing.drawMode == modes.LINE){
+
+        }
+        else if (thing.drawMode == modes.SQUARE){
+
+        }
+        else if (thing.drawMode == modes.RECTANGLE){
+
+        }
+        else if (thing.drawMode == modes.POLYGON){ // polygon
+            primitiveType = gl.LINE_LOOP
+        }
+        gl.drawArrays(primitiveType, offset, count);
     })
 
-
-    // /* DRAW TO CANVAS */
-    // gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    // gl.useProgram(program)
-    // thingsToDraw.map(thing => {
-    //     // position dulu
-    //     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    //     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(thing.positions), gl.STATIC_DRAW);
-    //     gl.enableVertexAttribArray(positionAttLoc);
-    //     // how to get position
-    //     var size = 2
-    //     var type = gl.FLOAT
-    //     var normalize = false
-    //     var stride = 0
-    //     var offset = 0
-    //     gl.vertexAttribPointer(positionAttLoc, size, type, normalize, stride, offset);
-
-    //     //habisitu color
-    //     var colorArray = []
-    //     var numPoints = thing.positions.length/2
-    //     for(var i = 0; i < numPoints; i++){
-    //         colorArray.push(thing.color[0], thing.color[1], thing.color[2])
-    //     }
-
-    //     gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-    //     gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(colorArray), gl.STATIC_DRAW);
-    //     gl.enableVertexAttribArray(colorAttLoc);
-    //     // how to get color
-    //     size = 3;
-    //     type = gl.UNSIGNED_BYTE;
-    //     normalize = true;
-    //     stride = 0;
-    //     offset = 0;
-    //     gl.vertexAttribPointer(colorAttLoc, size, type, normalize, stride, offset);
-
-    //     var primitiveType = gl.TRIANGLES
-    //     var offset = 0;
-    //     var count = thing.positions.length/2;
-    //     if (thing.drawMode == modes.LINE){
-
-    //     }
-    //     else if (thing.drawMode == modes.SQUARE){
-
-    //     }
-    //     else if (thing.drawMode == modes.RECTANGLE){
-
-    //     }
-    //     else if (thing.drawMode == modes.POLYGON){ // polygon
-    //         primitiveType = gl.LINE_LOOP
-    //     }
-    //     gl.drawArrays(primitiveType, offset, count);
-    // })
 }
 
 // set parameters for texture and renderbuffer
