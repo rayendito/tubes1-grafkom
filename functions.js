@@ -184,20 +184,14 @@ function setFrameBufferAttachmentSizes(gl, width, height, targetTexture, depthBu
 //return indexes of x and y respectively -- to change in the attribute
 function findNearestVertex(X, Y, arrayOfLoc){
     // assumption: arrayOfLoc selalu bernilai genap karena merupakan pasangan titik
-    var min, xret, yret
+    var min = Infinity
+    var xret, yret
     for (var i = 0; i < arrayOfLoc.length; i += 2){
-        if(!min){
-            min = calcDistance(X, Y, arrayOfLoc[i], arrayOfLoc[i+1])
+        var cand_min = calcDistance(X, Y, arrayOfLoc[i], arrayOfLoc[i+1])
+        if(cand_min < min){
+            min = cand_min
             xret = i
             yret = i+1
-        }
-        else{
-            var cand_min = calcDistance(X, Y, arrayOfLoc[i], arrayOfLoc[i+1])
-            if(cand_min < min){
-                min = cand_min
-                xret = i
-                yret = i+1
-            }
         }
     }
     return {
