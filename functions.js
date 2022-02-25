@@ -35,9 +35,10 @@ function hexToRGB(hex){
 // draw a set of shapes, input is 
 function drawToScreen(gl, program, pick_program, fb, thingsToDraw,
                         positionBuffer, colorBuffer,
-                        positionAttLoc, colorAttLoc, modes,
+                        positionAttLoc, colorAttLoc,
+                        drawMode, modes,
                         pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
-                        mouseX, mouseY) {
+                        mouseX, mouseY, nowColor) {
     // clear screen first wkwkw
     clearScreenToWhite(gl)
 
@@ -88,7 +89,9 @@ function drawToScreen(gl, program, pick_program, fb, thingsToDraw,
         data);             // typed array to hold result
     
     if(data[0] > 0){
-        thingsToDraw[0].color = [245, 66, 117]
+        if(drawMode == modes.CCOLOR){
+            thingsToDraw[data[0]-1].color = nowColor
+        }
     }
     else{
         thingsToDraw[0].color = [28, 109, 171]

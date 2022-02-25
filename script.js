@@ -14,12 +14,15 @@ function main(){
     var nowColor = [0,0,0]
     var firstPointPolygon = true
     const modes = {
+        NONE: -1,
         LINE : 0,
         SQUARE : 1,
         RECTANGLE : 2,
-        POLYGON : 3
+        POLYGON : 3,
+        CCOLOR: 4,
+        MOVE : 5
     }
-    var drawMode = -1
+    var drawMode = modes.NONE
     var thingsToDraw = [
         {
             id: 1,
@@ -34,9 +37,24 @@ function main(){
                 28, 109, 171
             ],
             drawMode: modes.POLYGON
+        },
+        {
+            id: 2,
+            positions:[
+                1091, 117,
+                1231, 127,
+                1188, 200
+            ],
+            color: [
+                28, 109, 171
+            ],
+            drawMode: modes.POLYGON
         }
     ]
     var thingsToDrawLength = thingsToDraw.length
+    // mouse location
+    let mouseX = -1;
+    let mouseY = -1;
 
     // resizing canvas supaya resolusi bagus
     canvas.width  = canvas.clientWidth;
@@ -135,8 +153,23 @@ function main(){
     gl.useProgram(pick_program);
     gl.uniform2f(pick_resolutionUnLoc, gl.canvas.width, gl.canvas.height);
     
+    drawToScreen(gl, program, pick_program, fb, thingsToDraw,
+                    positionBuffer, colorBuffer,
+                    positionAttLoc, colorAttLoc,
+                    drawMode, modes,
+                    pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
+                    mouseX, mouseY, nowColor)
+
     /********** EVENT LISTENERS **********/
     // changing modes
+    const noSelect = document.getElementById("noneBtn")
+    noSelect.addEventListener("click", function(e){
+        // artinya lagi ga milih apa apa, not drawing anything
+        drawMode = -1
+        document.getElementById("curMode").innerHTML = "NONE"
+        firstPointPolygon = true
+    })
+
     const line = document.getElementById("lineBtn")
     line.addEventListener("click", function(e){
         drawMode = modes.LINE
@@ -161,12 +194,16 @@ function main(){
         document.getElementById("curMode").innerHTML = "POLY"
     })
 
-    const noSelect = document.getElementById("noneBtn")
-    noSelect.addEventListener("click", function(e){
-        // artinya lagi ga milih apa apa, not drawing anything
-        drawMode = -1
-        document.getElementById("curMode").innerHTML = "NONE"
-        firstPointPolygon = true
+    const ccolor = document.getElementById("changeColBtn")
+    ccolor.addEventListener("click", function(e){
+        drawMode = modes.CCOLOR
+        document.getElementById("curMode").innerHTML = "CCOLOR"
+    })
+
+    const move = document.getElementById("moveBtn")
+    move.addEventListener("click", function(e){
+        drawMode = modes.MOVE
+        document.getElementById("curMode").innerHTML = "MOVE"
     })
 
     //color picker
@@ -176,22 +213,22 @@ function main(){
         nowColor = rgb
     })
 
-    // mouse location
-    let mouseX = -1;
-    let mouseY = -1;
+
+    /* canvas event listener */
     canvas.addEventListener('mousemove', (e) => {
         const rect = canvas.getBoundingClientRect();
         mouseX = e.clientX - rect.left;
         mouseY = e.clientY - rect.top;
         document.getElementById("X").innerHTML = mouseX
         document.getElementById("Y").innerHTML = mouseY
-        drawToScreen(gl, program, pick_program, fb,
-            thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes,
-            pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
-            mouseX, mouseY)
+        // drawToScreen(gl, program, pick_program, fb, thingsToDraw,
+        //     positionBuffer, colorBuffer,
+        //     positionAttLoc, colorAttLoc,
+        //     drawMode, modes,
+        //     pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
+        //     mouseX, mouseY, nowColor)
     })
 
-    /* canvas event listener */
     //draw
     canvas.addEventListener("click", function(e){
         if(drawMode == modes.POLYGON){
@@ -210,12 +247,21 @@ function main(){
             else{
                 thingsToDraw[thingsToDrawLength-1].positions.push(e.pageX, e.pageY-this.offsetTop)
             }
-            drawToScreen(gl, program, pick_program, fb,
-                thingsToDraw, positionBuffer, colorBuffer, positionAttLoc, colorAttLoc, modes,
+            drawToScreen(gl, program, pick_program, fb, thingsToDraw,
+                positionBuffer, colorBuffer,
+                positionAttLoc, colorAttLoc,
+                drawMode, modes,
                 pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
-                mouseX, mouseY)
+                mouseX, mouseY, nowColor)
         }
-        // add elifs for other modes
+        if(drawMode = modes.CCOLOR){
+            drawToScreen(gl, program, pick_program, fb, thingsToDraw,
+                positionBuffer, colorBuffer,
+                positionAttLoc, colorAttLoc,
+                drawMode, modes,
+                pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
+                mouseX, mouseY, nowColor)
+        }
     })
 } 
 
