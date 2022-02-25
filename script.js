@@ -23,34 +23,7 @@ function main(){
         MOVE : 5
     }
     var drawMode = modes.NONE
-    var thingsToDraw = [
-        {
-            id: 1,
-            positions:[
-                452, 187,
-                638, 104,
-                922, 243,
-                745, 406,
-                546, 407
-            ],
-            color: [
-                28, 109, 171
-            ],
-            drawMode: modes.POLYGON
-        },
-        {
-            id: 2,
-            positions:[
-                1091, 117,
-                1231, 127,
-                1188, 200
-            ],
-            color: [
-                28, 109, 171
-            ],
-            drawMode: modes.POLYGON
-        }
-    ]
+    var thingsToDraw = []
     var thingsToDrawLength = thingsToDraw.length
     // mouse location
     let mouseX = -1;
