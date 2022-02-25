@@ -31,7 +31,7 @@
             vec2 nolToDua = nolToSatu * 2.0;
             vec2 clipSpace = nolToDua - 1.0;
             gl_Position = vec4(clipSpace.x, clipSpace.y*-1.0, 0, 1);
-
+            gl_PointSize = 10.0;
 
             v_color = a_color;
         }
@@ -43,6 +43,30 @@
 
         void main() {
             gl_FragColor = v_color;
+        }
+    </script>
+
+    <!-- SHADER PROGRAM FOR PICKING -->
+    <!-- vertex shader -->
+    <script id="vertex-src-pick" type="notjs">
+        attribute vec2 pick_position;
+        uniform vec2 pick_resolution;
+        
+        void main(){
+            vec2 nolToSatu = pick_position/pick_resolution;
+            vec2 nolToDua = nolToSatu * 2.0;
+            vec2 clipSpace = nolToDua - 1.0;
+            gl_Position = vec4(clipSpace.x, clipSpace.y*-1.0, 0, 1);
+            gl_PointSize = 10.0;
+        }
+    </script>
+
+    <!-- fragment shader -->
+    <script id="fragment-src-pick" type="notjs">
+        precision mediump float;
+        uniform vec4 u_id;
+        void main(){
+            gl_FragColor = u_id;
         }
     </script>
 </head>
@@ -58,11 +82,13 @@
             <div class="buttons">
                 <p><b id="curMode">NONE</b></p>
                 <!-- feature buttons -->
+                <button id="noneBtn" class="button" type="button">No Selection</button>
                 <button id="lineBtn" class="button" type="button">Line</button>
                 <button id="squareBtn" class="button" type="button">Square</button>
                 <button id="rectangleBtn" class="button" type="button">Rectangle</button>
                 <button id="polygonBtn" class="button" type="button">Polygon</button>
-                <button id="noneBtn" class="button" type="button">No Selection</button>
+                <button id="changeColBtn" class="button" type="button">Change Color</button>
+                <button id="moveBtn" class="button" type="button">Move/Resize</button>
 
                 <!-- color picker -->
                 <input type="color" id="colorBtn" name="colorBtn" class="button" style="height: 4%;" value="#000000">
@@ -71,6 +97,10 @@
                 <!-- save and load button -->
                 <button id="loadBtn" class="button" style="margin-top: 50px;" type="button">Load</button>
                 <button id="saveBtn" class="button" type="button">Save</button>
+                
+                <div>X : <span id="X"></span></div>
+                <div>Y : <span id="Y"></span></div>
+                <div>C : <span id="C"></span></div>
             </div>
         </div>
     </div>
