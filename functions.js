@@ -70,29 +70,17 @@ function drawToScreen(gl, program, pick_program, fb, thingsToDraw,
         ]
         gl.uniform4fv(pick_colorUnLoc, colorArray)
 
-        var primitiveType = gl.TRIANGLES
+        var primitiveType = gl.POINTS
         var offset = 0;
         var count = thing.positions.length/2;
-        if (thing.drawMode == modes.LINE){
-
-        }
-        else if (thing.drawMode == modes.SQUARE){
-
-        }
-        else if (thing.drawMode == modes.RECTANGLE){
-
-        }
-        else if (thing.drawMode == modes.POLYGON){ // polygon
-            primitiveType = gl.LINE_LOOP
-        }
         gl.drawArrays(primitiveType, offset, count);
     })
 
     /* PIXEL UNDER MOUSE ON TEXTURE */
     const data = new Uint8Array(4);
     gl.readPixels(
-        mouseX,
-        gl.canvas.height - mouseY,
+        mouseX + 3,
+        gl.canvas.height - mouseY - 1,
         1,                 // width
         1,                 // height
         gl.RGBA,           // format

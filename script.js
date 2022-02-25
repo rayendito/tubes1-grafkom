@@ -22,7 +22,7 @@ function main(){
     var drawMode = -1
     var thingsToDraw = [
         {
-            id: 120,
+            id: 1,
             positions:[
                 452, 187,
                 638, 104,
