@@ -150,10 +150,10 @@ function drawToScreen(gl, program, pick_program, fb, thingsToDraw,
 
         }
         else if (thing.drawMode == modes.SQUARE){
-
+            primitiveType = gl.LINE_LOOP
         }
         else if (thing.drawMode == modes.RECTANGLE){
-
+            primitiveType = gl.LINE_LOOP
         }
         else if (thing.drawMode == modes.POLYGON){ // polygon
             primitiveType = gl.LINE_LOOP

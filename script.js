@@ -14,7 +14,9 @@ function main(){
     var nowColor = [0,0,0]
     var firstPointPolygon = true
     var firstPointLine = true
+    var firstPointSquare = true
     var hover_draw_line      = false;
+    var squareSize = 0;
     const modes = {
         NONE: -1,
         LINE : 0,
@@ -146,6 +148,7 @@ function main(){
         document.getElementById("curMode").innerHTML = "NONE"
         firstPointPolygon = true
         firstPointLine = true
+        firstPointSquare = true
     })
 
     const line = document.getElementById("lineBtn")
@@ -160,6 +163,7 @@ function main(){
     square.addEventListener("click", function(e){
         drawMode = modes.SQUARE
         document.getElementById("curMode").innerHTML = "SQUARE"
+        firstPointSquare = true
     })
 
     const rectangle = document.getElementById("rectangleBtn")
@@ -286,6 +290,7 @@ function main(){
                 thingsToDrawLength++
                 firstPointLine = false;
                 hover_draw_line = true
+                console.log(thingsToDraw)
                 // console.log(hover_draw_line)
             }
             else{
@@ -308,7 +313,35 @@ function main(){
                 mouseX, mouseY, nowColor)
 
 
+        } else if (drawMode == modes.SQUARE){
+            squareSize = 200
+
+            if (firstPointSquare){
+                thingsToDraw.push({
+                    id: thingsToDrawLength+1,
+                    positions:[
+                        e.pageX, e.pageY-this.offsetTop, //top left
+                        e.pageX + squareSize, e.pageY-this.offsetTop, //top right
+                        e.pageX + squareSize, e.pageY-this.offsetTop + squareSize, //bottom left
+                        e.pageX, e.pageY-this.offsetTop + squareSize  //bottom right
+                    ],
+                    color : nowColor,
+                    drawMode :modes.SQUARE
+                })
+                thingsToDrawLength++
+                firstPointSquare = false
+            }
+
+            console.log(thingsToDraw)
+
+            drawToScreen(gl, program, pick_program, fb, thingsToDraw,
+                positionBuffer, colorBuffer,
+                positionAttLoc, colorAttLoc,
+                drawMode, modes,
+                pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
+                mouseX, mouseY, nowColor)
         }
+
         if(drawMode == modes.CCOLOR){
             drawToScreen(gl, program, pick_program, fb, thingsToDraw,
                 positionBuffer, colorBuffer,
