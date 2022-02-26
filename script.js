@@ -14,6 +14,7 @@ function main(){
     var nowColor = [0,0,0]
     var firstPointPolygon = true
     var firstPointLine = true
+    var hover_draw_line      = false;
     const modes = {
         NONE: -1,
         LINE : 0,
@@ -225,6 +226,26 @@ function main(){
             }
             
         }
+        if(hover_draw_line){
+            if(thingsToDraw[thingsToDrawLength-1].positions.length == 2){
+                thingsToDraw[thingsToDrawLength-1].positions.push(mouseX, mouseY)
+            }else{
+                thingsToDraw[thingsToDrawLength-1].positions[thingsToDraw[thingsToDrawLength-1].positions.length-1]= mouseY;
+                thingsToDraw[thingsToDrawLength-1].positions[thingsToDraw[thingsToDrawLength-1].positions.length-2]= mouseX;
+            }
+            drawToScreen(gl, program, pick_program, fb, thingsToDraw,
+                positionBuffer, colorBuffer,
+                positionAttLoc, colorAttLoc,
+                drawMode, modes,
+                pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
+                mouseX, mouseY, nowColor)
+            
+
+           
+
+        }
+
+        
     })
 
     //draw
@@ -264,10 +285,21 @@ function main(){
                 })
                 thingsToDrawLength++
                 firstPointLine = false;
+                hover_draw_line = true
+                // console.log(hover_draw_line)
             }
             else{
-                thingsToDraw[thingsToDrawLength-1].positions.push(e.pageX, e.pageY-this.offsetTop)
+
+                if(hover_draw_line){
+                    thingsToDraw[thingsToDrawLength-1].positions[thingsToDraw[thingsToDrawLength-1].positions.length-1]= e.pageY-this.offsetTop;
+                    thingsToDraw[thingsToDrawLength-1].positions[thingsToDraw[thingsToDrawLength-1].positions.length-2]= e.pageX;
+
+                }
+                firstPointLine = true;
+                hover_draw_line = false;
             }
+
+            
             drawToScreen(gl, program, pick_program, fb, thingsToDraw,
                 positionBuffer, colorBuffer,
                 positionAttLoc, colorAttLoc,
@@ -275,7 +307,6 @@ function main(){
                 pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
                 mouseX, mouseY, nowColor)
 
-            
 
         }
         if(drawMode == modes.CCOLOR){
@@ -290,10 +321,12 @@ function main(){
 
     canvas.addEventListener('mousedown', (e) => {
         mouseClicked = true
+        
     })
 
     canvas.addEventListener('mouseup', (e) => {
         mouseClicked = false
+        
     })
 
     function save() {
