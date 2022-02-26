@@ -13,6 +13,7 @@ function main(){
     /********** ATTRIBUTES AND INITIALIZATIONS **********/
     var nowColor = [0,0,0]
     var firstPointPolygon = true
+    var firstPoint = true
     const modes = {
         NONE: -1,
         LINE : 0,
@@ -143,12 +144,14 @@ function main(){
         drawMode = -1
         document.getElementById("curMode").innerHTML = "NONE"
         firstPointPolygon = true
+        firstPoint = true
     })
 
     const line = document.getElementById("lineBtn")
     line.addEventListener("click", function(e){
         drawMode = modes.LINE
         document.getElementById("curMode").innerHTML = "LINE"
+        
     })
 
     const square = document.getElementById("squareBtn")
@@ -167,6 +170,7 @@ function main(){
     poly.addEventListener("click", function(e){
         drawMode = modes.POLYGON
         document.getElementById("curMode").innerHTML = "POLY"
+    
     })
 
     const ccolor = document.getElementById("changeColBtn")
@@ -174,6 +178,18 @@ function main(){
         drawMode = modes.CCOLOR
         document.getElementById("curMode").innerHTML = "CCOLOR"
     })
+
+    const btn_save = document.getElementById("saveBtn")
+    btn_save.addEventListener("click", function(e){
+        save(); 
+    })
+
+    const btn_load = document.getElementById("loadBtn")
+    btn_load.addEventListener("click", function(e){
+        load();
+        close_btn_handler();
+    })
+
 
     const move = document.getElementById("moveBtn")
     move.addEventListener("click", function(e){
@@ -232,6 +248,32 @@ function main(){
                 drawMode, modes,
                 pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
                 mouseX, mouseY, nowColor)
+
+        }else if (drawMode== modes.LINE){
+            if(firstPoint){
+                thingsToDraw.push({
+                    id: thingsToDrawLength+1,
+                    positions:[
+                        e.pageX, e.pageY-this.offsetTop
+                    ],
+                    color : nowColor,
+                    drawMode :modes.LINE
+                })
+                thingsToDrawLength++
+                firstPoint = false;
+            }
+            else{
+                thingsToDraw[thingsToDrawLength-1].positions.push(e.pageX, e.pageY-this.offsetTop)
+            }
+            drawToScreen(gl, program, pick_program, fb, thingsToDraw,
+                positionBuffer, colorBuffer,
+                positionAttLoc, colorAttLoc,
+                drawMode, modes,
+                pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
+                mouseX, mouseY, nowColor)
+
+            
+
         }
         if(drawMode == modes.CCOLOR){
             drawToScreen(gl, program, pick_program, fb, thingsToDraw,
@@ -250,6 +292,42 @@ function main(){
     canvas.addEventListener('mouseup', (e) => {
         mouseClicked = false
     })
-} 
+
+    function save() {
+        var date = new Date()
+        var a = document.createElement("a");
+        var file = new Blob([JSON.stringify(thingsToDraw)], {type : "text/plain"});
+        a.href = URL.createObjectURL(file);
+        a.download = `save_${date}.txt`;
+        a.click();
+    }
+    
+    function load() {
+        var src = document.getElementById("load_src");
+        var reader = new FileReader();
+    
+        reader.readAsText(src.files[0]);
+        reader.onerror = (e) => {console.log("Load error")};
+        reader.onload  = (e) => {
+            thingsToDraw = JSON.parse(e.target.result);
+            thingsToDrawLength = thingsToDraw.length;
+            drawToScreen(gl, program, pick_program, fb, thingsToDraw,
+                positionBuffer, colorBuffer,
+                positionAttLoc, colorAttLoc,
+                drawMode, modes,
+                pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
+                mouseX, mouseY, nowColor)
+        };
+    }
+}
+var modalLoad = document.getElementById("modalload")
+function close_btn_handler(){
+    modalLoad.style.display = "none";
+}
+
+function open_btn_handler_load(){
+    modalLoad.style.display = "Flex";
+}
+
 
 main()

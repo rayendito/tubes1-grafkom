@@ -140,6 +140,7 @@ function drawToScreen(gl, program, pick_program, fb, thingsToDraw,
         var offset = 0;
         var count = thing.positions.length/2;
         if (thing.drawMode == modes.LINE){
+            primitiveType = gl.LINES
 
         }
         else if (thing.drawMode == modes.SQUARE){

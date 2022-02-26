@@ -95,13 +95,20 @@
                 <label for="colorBtn">Color</label>
 
                 <!-- save and load button -->
-                <button id="loadBtn" class="button" style="margin-top: 50px;" type="button">Load</button>
-                <button id="saveBtn" class="button" type="button">Save</button>
+                <button onclick="open_btn_handler_load()"  class="button" style="margin-top: 50px;" type="button">Load</button>
+                <button  id="saveBtn" class="button" type="button">Save</button>
                 
                 <div>X : <span id="X"></span></div>
                 <div>Y : <span id="Y"></span></div>
                 <div>C : <span id="C"></span></div>
             </div>
+        </div>
+    </div>
+    <div id="modalload"class="modal-container">
+        <div class="modal-content">
+            <span class="close" onclick="close_btn_handler()">&times;</span>
+            <input type="file" id="load_src" accept="txt">
+            <button id="loadBtn">Load</button>
         </div>
     </div>
 </body>
