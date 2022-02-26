@@ -15,7 +15,9 @@ function main(){
     var firstPointPolygon = true
     var firstPointLine = true
     var firstPointSquare = true
+    var firstPointRectangle = true
     var hover_draw_line      = false;
+    var hover_draw_rectangle = false;
     var squareSize = 0;
     const modes = {
         NONE: -1,
@@ -249,6 +251,30 @@ function main(){
 
         }
 
+        if(hover_draw_rectangle){
+            var initPoint = thingsToDraw[thingsToDrawLength-1].positions
+            if(thingsToDraw[thingsToDrawLength-1].positions.length == 2){
+                thingsToDraw[thingsToDrawLength-1].positions.push(mouseX, initPoint[initPoint.length-1])
+                thingsToDraw[thingsToDrawLength-1].positions.push(initPoint[initPoint.length-2], mouseY)
+                thingsToDraw[thingsToDrawLength-1].positions.push(initPoint[0], mouseY)
+            }else{
+                thingsToDraw[thingsToDrawLength-1].positions[2]= mouseX;
+                thingsToDraw[thingsToDrawLength-1].positions[3]= initPoint[1];
+                thingsToDraw[thingsToDrawLength-1].positions[4]= initPoint[2];
+                thingsToDraw[thingsToDrawLength-1].positions[5]= mouseY;
+                thingsToDraw[thingsToDrawLength-1].positions[6]= initPoint[0];
+                thingsToDraw[thingsToDrawLength-1].positions[7]= mouseY;
+                console.log(initPoint)
+
+            }
+            drawToScreen(gl, program, pick_program, fb, thingsToDraw,
+                positionBuffer, colorBuffer,
+                positionAttLoc, colorAttLoc,
+                drawMode, modes,
+                pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
+                mouseX, mouseY, nowColor)
+        }
+
         
     })
 
@@ -340,6 +366,47 @@ function main(){
                 drawMode, modes,
                 pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
                 mouseX, mouseY, nowColor)
+        } else if (drawMode == modes.RECTANGLE) {
+            if(firstPointRectangle){
+                thingsToDraw.push({
+                    id: thingsToDrawLength+1,
+                    positions:[
+                        e.pageX, e.pageY-this.offsetTop
+                    ],
+                    color : nowColor,
+                    drawMode :modes.RECTANGLE
+                })
+                thingsToDrawLength++
+                firstPointRectangle = false;
+                hover_draw_rectangle = true
+                console.log(thingsToDraw)
+                // console.log(hover_draw_line)
+            }
+            else{
+
+                if(hover_draw_rectangle){
+                    var initPosition = thingsToDraw[thingsToDrawLength-1].positions
+                    thingsToDraw[thingsToDrawLength-1].positions[2]= e.pageX;
+                    thingsToDraw[thingsToDrawLength-1].positions[3]= initPosition[1];
+                    thingsToDraw[thingsToDrawLength-1].positions[4]= initPosition[2];
+                    thingsToDraw[thingsToDrawLength-1].positions[5]= e.pageY-this.offsetTop;
+                    thingsToDraw[thingsToDrawLength-1].positions[6]= initPosition[0];
+                    thingsToDraw[thingsToDrawLength-1].positions[7]= e.pageY-this.offsetTop;
+                    console.log(thingsToDraw)
+
+                }
+                firstPointRectangle = true;
+                hover_draw_rectangle = false;
+            }
+
+            
+            drawToScreen(gl, program, pick_program, fb, thingsToDraw,
+                positionBuffer, colorBuffer,
+                positionAttLoc, colorAttLoc,
+                drawMode, modes,
+                pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
+                mouseX, mouseY, nowColor)
+
         }
 
         if(drawMode == modes.CCOLOR){
