@@ -264,7 +264,7 @@ function main(){
                 thingsToDraw[thingsToDrawLength-1].positions[5]= mouseY;
                 thingsToDraw[thingsToDrawLength-1].positions[6]= initPoint[0];
                 thingsToDraw[thingsToDrawLength-1].positions[7]= mouseY;
-                console.log(initPoint)
+                //console.log(initPoint)
 
             }
             drawToScreen(gl, program, pick_program, fb, thingsToDraw,
@@ -358,7 +358,7 @@ function main(){
                 firstPointSquare = false
             }
 
-            console.log(thingsToDraw)
+            //console.log(thingsToDraw)
 
             drawToScreen(gl, program, pick_program, fb, thingsToDraw,
                 positionBuffer, colorBuffer,
@@ -379,7 +379,7 @@ function main(){
                 thingsToDrawLength++
                 firstPointRectangle = false;
                 hover_draw_rectangle = true
-                console.log(thingsToDraw)
+                // console.log(thingsToDraw)
                 // console.log(hover_draw_line)
             }
             else{
@@ -392,7 +392,7 @@ function main(){
                     thingsToDraw[thingsToDrawLength-1].positions[5]= e.pageY-this.offsetTop;
                     thingsToDraw[thingsToDrawLength-1].positions[6]= initPosition[0];
                     thingsToDraw[thingsToDrawLength-1].positions[7]= e.pageY-this.offsetTop;
-                    console.log(thingsToDraw)
+                    //console.log(thingsToDraw)
 
                 }
                 firstPointRectangle = true;
