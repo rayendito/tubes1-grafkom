@@ -18,6 +18,7 @@ function main(){
     var firstPointRectangle = true
     var hover_draw_line      = false;
     var hover_draw_rectangle = false;
+    var hover_draw_square = false;
     var squareSize = 0;
     const modes = {
         NONE: -1,
@@ -245,10 +246,36 @@ function main(){
                 drawMode, modes,
                 pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
                 mouseX, mouseY, nowColor)
-            
+        }
 
-           
+        if(hover_draw_square){
+            var initPoint = thingsToDraw[thingsToDrawLength-1].positions
+            var side = 0;
+            if (mouseY > initPoint[1]){
+                side = Math.abs(mouseX - initPoint[0])
+            } else {
+                side = -1 * Math.abs(mouseX - initPoint[0])
+            }
+            if(thingsToDraw[thingsToDrawLength-1].positions.length == 2){
+                thingsToDraw[thingsToDrawLength-1].positions.push(mouseX, initPoint[initPoint.length-1])
+                thingsToDraw[thingsToDrawLength-1].positions.push(initPoint[initPoint.length-2], initPoint[1] + side)
+                thingsToDraw[thingsToDrawLength-1].positions.push(initPoint[0], initPoint[1] + side)
+            }else{
+                thingsToDraw[thingsToDrawLength-1].positions[2]= mouseX;
+                thingsToDraw[thingsToDrawLength-1].positions[3]= initPoint[1];
+                thingsToDraw[thingsToDrawLength-1].positions[4]= initPoint[2];
+                thingsToDraw[thingsToDrawLength-1].positions[5]= initPoint[1] + side;
+                thingsToDraw[thingsToDrawLength-1].positions[6]= initPoint[0];
+                thingsToDraw[thingsToDrawLength-1].positions[7]= initPoint[1] + side;
+                //console.log(initPoint)
 
+            }
+            drawToScreen(gl, program, pick_program, fb, thingsToDraw,
+                positionBuffer, colorBuffer,
+                positionAttLoc, colorAttLoc,
+                drawMode, modes,
+                pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
+                mouseX, mouseY, nowColor)
         }
 
         if(hover_draw_rectangle){
@@ -340,32 +367,52 @@ function main(){
 
 
         } else if (drawMode == modes.SQUARE){
-            squareSize = 200
-
-            if (firstPointSquare){
+            if(firstPointSquare){
                 thingsToDraw.push({
                     id: thingsToDrawLength+1,
                     positions:[
-                        e.pageX, e.pageY-this.offsetTop, //top left
-                        e.pageX + squareSize, e.pageY-this.offsetTop, //top right
-                        e.pageX + squareSize, e.pageY-this.offsetTop + squareSize, //bottom left
-                        e.pageX, e.pageY-this.offsetTop + squareSize  //bottom right
+                        e.pageX, e.pageY-this.offsetTop
                     ],
                     color : nowColor,
                     drawMode :modes.SQUARE
                 })
                 thingsToDrawLength++
-                firstPointSquare = false
+                firstPointSquare = false;
+                hover_draw_square = true
+                // console.log(thingsToDraw)
+                // console.log(hover_draw_line)
+            }
+            else{
+
+                if(hover_draw_square){
+                    var initPosition = thingsToDraw[thingsToDrawLength-1].positions
+                    var side = 0;
+                    if (mouseY > initPosition[1]){
+                        side = Math.abs(mouseX - initPosition[0])
+                    } else {
+                        side = -1 * Math.abs(mouseX - initPosition[0])
+                    }
+                    thingsToDraw[thingsToDrawLength-1].positions[2]= e.pageX;
+                    thingsToDraw[thingsToDrawLength-1].positions[3]= initPosition[1];
+                    thingsToDraw[thingsToDrawLength-1].positions[4]= initPosition[2];
+                    thingsToDraw[thingsToDrawLength-1].positions[5]= initPosition[1] + side;
+                    thingsToDraw[thingsToDrawLength-1].positions[6]= initPosition[0];
+                    thingsToDraw[thingsToDrawLength-1].positions[7]= initPosition[1] + side;
+                    //console.log(thingsToDraw)
+
+                }
+                firstPointSquare = true;
+                hover_draw_square = false;
             }
 
-            //console.log(thingsToDraw)
-
+            
             drawToScreen(gl, program, pick_program, fb, thingsToDraw,
                 positionBuffer, colorBuffer,
                 positionAttLoc, colorAttLoc,
                 drawMode, modes,
                 pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
                 mouseX, mouseY, nowColor)
+
         } else if (drawMode == modes.RECTANGLE) {
             if(firstPointRectangle){
                 thingsToDraw.push({
