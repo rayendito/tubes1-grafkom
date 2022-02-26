@@ -98,6 +98,12 @@ function drawToScreen(gl, program, pick_program, fb, thingsToDraw,
                 thingsToDraw[data[0]-1].positions[pickedPoint.x] = mouseX
                 thingsToDraw[data[0]-1].positions[pickedPoint.y] = mouseY
             }
+            else if (thingsToDraw[data[0]-1].drawMode == modes.LINE){
+                const pickedPoint = findNearestVertex(mouseX, mouseY, thingsToDraw[data[0]-1].positions)
+                thingsToDraw[data[0]-1].positions[pickedPoint.x] = mouseX
+                thingsToDraw[data[0]-1].positions[pickedPoint.y] = mouseY
+
+            }
         }
     }
     document.getElementById("C").innerHTML = data[0] + " " + data[1] + " " + data[2] + " " + data[3]

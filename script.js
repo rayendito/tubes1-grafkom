@@ -13,7 +13,7 @@ function main(){
     /********** ATTRIBUTES AND INITIALIZATIONS **********/
     var nowColor = [0,0,0]
     var firstPointPolygon = true
-    var firstPoint = true
+    var firstPointLine = true
     const modes = {
         NONE: -1,
         LINE : 0,
@@ -144,13 +144,14 @@ function main(){
         drawMode = -1
         document.getElementById("curMode").innerHTML = "NONE"
         firstPointPolygon = true
-        firstPoint = true
+        firstPointLine = true
     })
 
     const line = document.getElementById("lineBtn")
     line.addEventListener("click", function(e){
         drawMode = modes.LINE
         document.getElementById("curMode").innerHTML = "LINE"
+        firstPointLine = true
         
     })
 
@@ -170,6 +171,7 @@ function main(){
     poly.addEventListener("click", function(e){
         drawMode = modes.POLYGON
         document.getElementById("curMode").innerHTML = "POLY"
+        firstPointPolygon = true
     
     })
 
@@ -221,6 +223,7 @@ function main(){
                     pick_positionBuffer, pick_positionAttLoc, pick_colorUnLoc,
                     mouseX, mouseY, nowColor)
             }
+            
         }
     })
 
@@ -250,7 +253,7 @@ function main(){
                 mouseX, mouseY, nowColor)
 
         }else if (drawMode== modes.LINE){
-            if(firstPoint){
+            if(firstPointLine){
                 thingsToDraw.push({
                     id: thingsToDrawLength+1,
                     positions:[
@@ -260,7 +263,7 @@ function main(){
                     drawMode :modes.LINE
                 })
                 thingsToDrawLength++
-                firstPoint = false;
+                firstPointLine = false;
             }
             else{
                 thingsToDraw[thingsToDrawLength-1].positions.push(e.pageX, e.pageY-this.offsetTop)
