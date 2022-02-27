@@ -104,6 +104,31 @@ function drawToScreen(gl, program, pick_program, fb, thingsToDraw,
                 thingsToDraw[data[0]-1].positions[pickedPoint.y] = mouseY
 
             }
+            else if (thingsToDraw[data[0]-1].drawMode == modes.SQUARE) {
+                const pickedPoint = findNearestVertex(mouseX, mouseY, thingsToDraw[data[0]-1].positions)
+                var deltaX = mouseX - thingsToDraw[data[0]-1].positions[pickedPoint.x]
+                thingsToDraw[data[0]-1].positions[0] = thingsToDraw[data[0]-1].positions[0] - deltaX
+                thingsToDraw[data[0]-1].positions[1] = thingsToDraw[data[0]-1].positions[1] - deltaX
+                thingsToDraw[data[0]-1].positions[2] = thingsToDraw[data[0]-1].positions[2] + deltaX
+                thingsToDraw[data[0]-1].positions[3] = thingsToDraw[data[0]-1].positions[3] - deltaX
+                thingsToDraw[data[0]-1].positions[4] = thingsToDraw[data[0]-1].positions[4] + deltaX
+                thingsToDraw[data[0]-1].positions[5] = thingsToDraw[data[0]-1].positions[5] + deltaX
+                thingsToDraw[data[0]-1].positions[6] = thingsToDraw[data[0]-1].positions[6] - deltaX
+                thingsToDraw[data[0]-1].positions[7] = thingsToDraw[data[0]-1].positions[7] + deltaX
+            } 
+            else if (thingsToDraw[data[0]-1].drawMode == modes.RECTANGLE) {
+                const pickedPoint = findNearestVertex(mouseX, mouseY, thingsToDraw[data[0]-1].positions)
+                var deltaX = mouseX - thingsToDraw[data[0]-1].positions[pickedPoint.x]
+                var deltaY = mouseY - thingsToDraw[data[0]-1].positions[pickedPoint.y] 
+                thingsToDraw[data[0]-1].positions[0] = thingsToDraw[data[0]-1].positions[0] - deltaX
+                thingsToDraw[data[0]-1].positions[1] = thingsToDraw[data[0]-1].positions[1] - deltaY
+                thingsToDraw[data[0]-1].positions[2] = thingsToDraw[data[0]-1].positions[2] + deltaX
+                thingsToDraw[data[0]-1].positions[3] = thingsToDraw[data[0]-1].positions[3] - deltaY
+                thingsToDraw[data[0]-1].positions[4] = thingsToDraw[data[0]-1].positions[4] + deltaX
+                thingsToDraw[data[0]-1].positions[5] = thingsToDraw[data[0]-1].positions[5] + deltaY
+                thingsToDraw[data[0]-1].positions[6] = thingsToDraw[data[0]-1].positions[6] - deltaX
+                thingsToDraw[data[0]-1].positions[7] = thingsToDraw[data[0]-1].positions[7] + deltaY
+            }
         }
     }
     document.getElementById("C").innerHTML = data[0] + " " + data[1] + " " + data[2] + " " + data[3]

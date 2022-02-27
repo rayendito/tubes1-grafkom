@@ -19,7 +19,6 @@ function main(){
     var hover_draw_line      = false;
     var hover_draw_rectangle = false;
     var hover_draw_square = false;
-    var squareSize = 0;
     const modes = {
         NONE: -1,
         LINE : 0,
