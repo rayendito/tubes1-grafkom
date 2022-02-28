@@ -105,25 +105,59 @@ function drawToScreen(gl, program, pick_program, fb, thingsToDraw,
 
             }
             else if (thingsToDraw[data[0]-1].drawMode == modes.SQUARE) {
-                const pickedPoint = findNearestVertex(mouseX, mouseY, thingsToDraw[data[0]-1].positions)
-                if(pickedPoint.x == 0 || pickedPoint.x == 6) {
+                var listPositions = thingsToDraw[data[0]-1].positions
+                const pickedPoint = findNearestVertex(mouseX, mouseY, listPositions)
+                var topLeft = -1
+                var topRight = -1
+                var bottomLeft = -1
+                var bottomRight = -1
+
+                if(listPositions[0] < listPositions[2]){ //kiri
+                    if(listPositions[1] > listPositions[5]){ //bawah
+                        bottomLeft = 0
+                        bottomRight = 2
+                        topRight = 4
+                        topLeft = 6
+                    } else {
+                        topLeft = 0
+                        topRight = 2
+                        bottomRight = 4
+                        bottomLeft = 6
+                    }
+                }
+
+                if(listPositions[0] > listPositions[2]) { //kanan
+                    if(listPositions[1] > listPositions[5]) { //bawah
+                        bottomRight = 0
+                        bottomLeft = 2
+                        topLeft = 4
+                        topRight = 6
+                    } else {
+                        topRight = 0
+                        topLeft = 2
+                        bottomLeft = 4
+                        bottomRight = 6
+                    }
+                }
+
+                if(pickedPoint.x == topLeft || pickedPoint.x == bottomLeft) {
                     var deltaX = (mouseX - thingsToDraw[data[0]-1].positions[pickedPoint.x])*(-1)
                 } else {
                     var deltaX = (mouseX - thingsToDraw[data[0]-1].positions[pickedPoint.x])
                 }
-                if(pickedPoint.y == 1 || pickedPoint.y == 3) {
+                if(pickedPoint.y == topLeft + 1 || pickedPoint.y == topRight + 1) {
                     var deltaY = (mouseY - thingsToDraw[data[0]-1].positions[pickedPoint.y])*(-1)
                 } else {
                     var deltaY = (mouseY - thingsToDraw[data[0]-1].positions[pickedPoint.y])
                 }
-                thingsToDraw[data[0]-1].positions[0] = thingsToDraw[data[0]-1].positions[0] - (deltaX+deltaY)/2
-                thingsToDraw[data[0]-1].positions[1] = thingsToDraw[data[0]-1].positions[1] - (deltaX+deltaY)/2
-                thingsToDraw[data[0]-1].positions[2] = thingsToDraw[data[0]-1].positions[2] + (deltaX+deltaY)/2
-                thingsToDraw[data[0]-1].positions[3] = thingsToDraw[data[0]-1].positions[3] - (deltaX+deltaY)/2
-                thingsToDraw[data[0]-1].positions[4] = thingsToDraw[data[0]-1].positions[4] + (deltaX+deltaY)/2
-                thingsToDraw[data[0]-1].positions[5] = thingsToDraw[data[0]-1].positions[5] + (deltaX+deltaY)/2
-                thingsToDraw[data[0]-1].positions[6] = thingsToDraw[data[0]-1].positions[6] - (deltaX+deltaY)/2
-                thingsToDraw[data[0]-1].positions[7] = thingsToDraw[data[0]-1].positions[7] + (deltaX+deltaY)/2
+                thingsToDraw[data[0]-1].positions[topLeft] = thingsToDraw[data[0]-1].positions[topLeft] - (deltaX+deltaY)/2
+                thingsToDraw[data[0]-1].positions[topLeft + 1] = thingsToDraw[data[0]-1].positions[topLeft + 1] - (deltaX+deltaY)/2
+                thingsToDraw[data[0]-1].positions[topRight] = thingsToDraw[data[0]-1].positions[topRight] + (deltaX+deltaY)/2
+                thingsToDraw[data[0]-1].positions[topRight + 1] = thingsToDraw[data[0]-1].positions[topRight + 1] - (deltaX+deltaY)/2
+                thingsToDraw[data[0]-1].positions[bottomRight] = thingsToDraw[data[0]-1].positions[bottomRight] + (deltaX+deltaY)/2
+                thingsToDraw[data[0]-1].positions[bottomRight + 1] = thingsToDraw[data[0]-1].positions[bottomRight + 1] + (deltaX+deltaY)/2
+                thingsToDraw[data[0]-1].positions[bottomLeft] = thingsToDraw[data[0]-1].positions[bottomLeft] - (deltaX+deltaY)/2
+                thingsToDraw[data[0]-1].positions[bottomLeft + 1] = thingsToDraw[data[0]-1].positions[bottomLeft + 1] + (deltaX+deltaY)/2
             } 
             else if (thingsToDraw[data[0]-1].drawMode == modes.RECTANGLE) {
                 const pickedPoint = findNearestVertex(mouseX, mouseY, thingsToDraw[data[0]-1].positions)
