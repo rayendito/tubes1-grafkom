@@ -97,6 +97,9 @@
                 <!-- save and load button -->
                 <button onclick="open_btn_handler_load()"  class="button" style="margin-top: 50px;" type="button">Load</button>
                 <button  id="saveBtn" class="button" type="button">Save</button>
+
+                <!-- help button -->
+                <button onClick="open_btn_handler_help()" class="button" style="margin-top: 50px;" type="button">Help</button>
                 
                 <div>X : <span id="X"></span></div>
                 <div>Y : <span id="Y"></span></div>
@@ -111,5 +114,50 @@
             <button id="loadBtn">Load</button>
         </div>
     </div>
-</body>
+    <div id="modalhelp" class="modal-container">
+        <div class="modal-content">
+            <span class="close" onclick="close_btn_handler_help()">&times;</span>
+            <h2 style="text-align:center;">HELP</h2>
+
+                <h3>Fitur square:</h3>
+                <div style="text-align:justify;">
+                Klik tombol square terlebih dahulu, klik dimana saja di dalam kanvas,
+                kemudian gerakkan mouse ke arah yang diinginkan untuk membentuk persegi.
+                Titik yang diklik pertama akan menjadi simpul lalu akan menghasilkan persegi
+                yang membesar ke arah mouse di gerakkan dengan panjang sisi sebesar mouse 
+                digerakkan ke arah sumbu x.
+                </div>
+            
+                <h3>Fitur rectangle:</h3>
+                <div style="text-align:justify;">
+                Klik tombol square terlebih dahulu, klik dimana saja di dalam kanvas,
+                kemudian gerakkan mouse ke arah yang diinginkan untuk membentuk persegi.
+                Titik yang diklik pertama akan menjadi simpul lalu akan menghasilkan persegi
+                panjang yang membesar ke arah mouse di gerakkan dengan panjang sebesar mouse 
+                digerakkan ke arah sumbu x dan lebar sebesar mouse digerakkan ke arah sumbu y.
+                </div>
+
+                <h3>Fitur polygon:</h3>
+                <div style="text-align:justify;">
+                Klik tombol poligon terlebih dahulu, klik di mana saja dalam canvas beberapa kali sesuai 
+                jumlah vertex yang diinginkan, program akan menyambungkan titik titik tersebut.
+                Klik tombol poligon terlebih dahulu, klik di mana saja dalam canvas beberapa kali sesuai 
+                jumlah vertex yang diinginkan, program akan menyambungkan titik titik tersebut.
+                </div>
+
+                <h3>Fitur ganti warna:</h3>
+                <div style="text-align:justify;">
+                Ubah color picker ke warna yang diinginkan terlebih dahulu, kemudian gambar shape yang diinginkan. 
+                Untuk mengubah warna dari objek yang sudah dibuat, ubah color picker ke warna yang diinginkan terlebih dahulu, 
+                kemudian klik tombol color changer. Untuk mewarnai objek, klik di bagian vertex objek tersebut.
+                </div>
+
+                <h3>Fitur pindah vertex/ganti ukuran sisi:</h3>
+                <div style="text-align:justify;">
+                Klik tombol move terlebih dahulu kemudian klik dan geser vertex dari objek yang ingin diatur. 
+                Catatan: mohon geser vertex dengan cara perlahan.
+                </div>
+        </div>
+    </div>
+</body> 
 </html>

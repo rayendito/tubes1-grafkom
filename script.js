@@ -503,12 +503,21 @@ function main(){
     }
 }
 var modalLoad = document.getElementById("modalload")
+var modalHelp = document.getElementById("modalhelp")
 function close_btn_handler(){
     modalLoad.style.display = "none";
 }
 
+function close_btn_handler_help(){
+    modalHelp.style.display = "none";
+}
+
 function open_btn_handler_load(){
     modalLoad.style.display = "Flex";
+}
+
+function open_btn_handler_help(){
+    modalHelp.style.display = "Flex";
 }
 
 
